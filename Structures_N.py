@@ -108,9 +108,9 @@ def OraclePH(qc,ind):
     
     # Fonction H: R^(n-md) -> R^(n-md)xn
     H = 2*dot( dot(B,r) , dot(abs(u),B ))
-    # diag = np.empty(n,n)
+    # diag = np.zeros(n,n)
     # for i in range(n):
-    #   diag = r[i]*abs(u[i])
+    #   diag[i,i] = r[i]*abs(u[i])
     # H = 2*dot( dot(Bt,diag) ,B)
     
     # Condition Bool
