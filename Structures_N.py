@@ -103,8 +103,15 @@ def OraclePH(qc,ind):
     Bt = np.transpose(B)
     G = dot( Bt,r*Bqc*abs(Bqc) ) + dot( np.transpose( dot(Ar,B) ),pr )
     
+    ## Plutot :
+    # G = dot( Bt,r*u*abs(u) ) + dot( np.transpose( dot(Ar,B) ),pr )
+    
     # Fonction H: R^(n-md) -> R^(n-md)xn
     H = 2*dot( dot(B,r) , dot(abs(u),B ))
+    # diag = np.empty(n,n)
+    # for i in range(n):
+    #   diag = r[i]*abs(u[i])
+    # H = 2*dot( dot(Bt,diag) ,B)
     
     # Condition Bool
     
