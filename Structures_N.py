@@ -61,7 +61,7 @@ q0[:md] = dot(AdI,fd)
 
 ### Oracle
 
-def OraclePG(qc,ind):
+def OraclePG(qc,ind=4): # Valeur par défaut ind=4 => affiche les deux varible F,G
     '''
     qc:  vecteur de R^(n-md)
     ind: entier
@@ -75,7 +75,7 @@ def OraclePG(qc,ind):
     
     # Fonction G : R^(n-md) -> R^(n-md)
     Bt = np.transpose(B)
-    G = dot( Bt,r*Bqc*abs(Bqc) ) + dot( np.transpose( dot(Ar,B) ),pr )
+    G = dot( Bt,r*u*abs(u) ) + dot( np.transpose( dot(Ar,B) ),pr )
     
     # Condition bool
     if ind == 2:
@@ -87,7 +87,7 @@ def OraclePG(qc,ind):
     else:
         raise ValueError("ind must be in {2,3,4}")
 
-def OraclePH(qc,ind):
+def OraclePH(qc,ind=7): # Valeur par défaut ind=7 => affiche les trois varible F,G,H
     '''
     qc:  vecteur de R^(n-md)
     ind: entier
@@ -101,13 +101,13 @@ def OraclePH(qc,ind):
     
     # Fonction G : R^(n-md) -> R^(n-md)
     Bt = np.transpose(B)
-    G = dot( Bt,r*Bqc*abs(Bqc) ) + dot( np.transpose( dot(Ar,B) ),pr )
+    G = dot( Bt,r*u*abs(u) ) + dot( np.transpose( dot(Ar,B) ),pr )
     
     ## Plutot :
     # G = dot( Bt,r*u*abs(u) ) + dot( np.transpose( dot(Ar,B) ),pr )
     
     # Fonction H: R^(n-md) -> R^(n-md)xn
-    H = 2*dot( dot(B,r) , dot(abs(u),B ))
+    H = 2*dot( dot(Bt,np.diag(r*abs(u))) , B)
     # diag = np.zeros(n,n)
     # for i in range(n):
     #   diag[i,i] = r[i]*abs(u[i])
