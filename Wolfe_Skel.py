@@ -3,6 +3,7 @@
 import numpy as np
 from numpy import dot
 
+from Structures_N import *
 ########################################################################
 #                                                                      #
 #          RECHERCHE LINEAIRE SUIVANT LES CONDITIONS DE WOLFE          #
@@ -58,28 +59,25 @@ def Wolfe(alpha, x, D, Oracle):
         xn = x + alpha_n*D
         
         # Calcul des conditions de Wolfe
-        #
-        # ---> A completer...
-        # ---> A completer...
-        
-        # COndition 1
         
         new_argout = Oracle(xn)
         
-        cond1 = new_argout[0] - critere - omega_1*np.dot(gradient, D)
+        cond1 = new_argout[0] - critere - omega_1*np.dot(gradient, D) <=0
         
-        cond2 =  np.dot( new_argout[1] , D) - omega_2 * np.dot(argout[1], D)
+        cond2 =  np.dot( new_argout[1] , D) - omega_2 * np.dot(argout[1], D) >=0
         
         # Test des conditions de Wolfe
         # - si les deux conditions de Wolfe sont verifiees,
         #   faire ok = 1 : on sort alors de la boucle while
         # - sinon, modifier la valeur de alphan : on reboucle.
-
-        if cond1 > 0 : # condition 1 non verifiée
+        
+        argout = new_argout
+        
+        if not cond1 : # condition 1 non verifiée
             alpha_max = alpha_n
             alpha_n = (alpha_min + alpha_max)/2
         else :
-            if cond2 <0 : # condition 2 non verifiée
+            if not cond2 <0 : # condition 2 non verifiée
                 alpha_min = alpha_n
                 if alpha_max == np.inf :
                     alpha_n = 2*alpha_min
@@ -87,6 +85,7 @@ def Wolfe(alpha, x, D, Oracle):
                     alpha_n = (alpha_min + alpha_max)/2
             else : 
                 ok = 1
+                
         # Test d'indistinguabilite
         if np.linalg.norm(xn - xp) < dltx:
             ok = 2
@@ -95,21 +94,70 @@ def Wolfe(alpha, x, D, Oracle):
 
 ##-------------------------------------------------------------------------------
     
-def Gradient_V(Oracle,x0):
+def Gradient_V(x0,OraclePG):
     
     x = x0
     epsilon = 0.0001
     compteur = 0
     gradient = OraclePG(x0,3)
-    D = -gradient
+
     alpha = 1
     
-    while np.linalg.norm(gradient) > epsilon and compteur < 1000 :
+    while np.linalg.norm(gradient) < epsilon and compteur < 1000 :
         alpha = Wolfe(alpha,x,  gradient  ,OraclePG)[0]
         x -= alpha*gradient
         gradient = OraclePG(x,3)
         compteur +=1
-    return Oracle(x,2), Oracle(x,3),x
+    return x, OraclePG(x,2)
+
+def polak(x0,OraclePG):
+    
+    
+    epsilon = 0.0001
+    k = 1
+    g_k_1 = OraclePG(x0,3) # gradient à l'étape k-1
+    g_k = OraclePG(x0,3) # gradient à l'étape k
+    d_k = -gradient # direction de descente à l'étape k
+    
+    beta = 1
+    alpha = 1
+    
+    x = x0 + d_k
+    
+    while np.linalg.norm(gradient) >= epsilon and k < 1000 :
+        
+        # gradient à l'etape k
+        g_k = OraclePG(x,3)
+            
+        alpha = Wolfe(alpha, x ,  gradient  ,OraclePG)[0]
+        beta = np.dot(g_k, g_k - g_k_1)/np.linalg.norm(g_k_1)**2
+        
+                
+        d_k = -g_k + beta*d_k
+        
+        x += beta*d_k # x_k+1
+
+        gradient_k_1 = gradient_k
+    
+    return x,OraclePG(x,3),gradient_k
+
+def BFGS(x0,OraclePG):
+    
+    epsilon = 0.0001
+    k = 0
+    gradient_k_1 = OraclePG(x0,3) # gradient à l'étape k-1
+    gradient_k = OraclePG(x0,3) # gradient à l'étape k
+    d_k = -gradient # direction de descente à l'étape k
+    
+    beta = 1
+    alpha = 1
+    
+    x = x0 + d_k
+    delta_x = x
+    delta_g = 
+    while np.linalg.norm(gradient) >= epsilon and k < 1000 :
+        
+
         
     
     
