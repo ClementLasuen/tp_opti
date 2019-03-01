@@ -104,7 +104,7 @@ def Gradient_V(Oracle,x0):
     D = -gradient
     alpha = 1
     
-    while np.linalg.norm(gradient) < epsilon and compteur < 1000 :
+    while np.linalg.norm(gradient) > epsilon and compteur < 1000 :
         alpha = Wolfe(alpha,x,  gradient  ,OraclePG)[0]
         x -= alpha*gradient
         gradient = OraclePG(x,3)
