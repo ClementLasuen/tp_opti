@@ -95,7 +95,7 @@ def Wolfe(alpha, x, D, Oracle):
 
 ##-------------------------------------------------------------------------------
     
-def grad_pas_variable(x0):
+def Gradient_V(Oracle,x0):
     
     x = x0
     epsilon = 0.0001
@@ -109,7 +109,7 @@ def grad_pas_variable(x0):
         x -= alpha*gradient
         gradient = OraclePG(x,3)
         compteur +=1
-    return x, OraclePG(x,2)
+    return Oracle(x,2), Oracle(x,3),x
         
     
     
